@@ -23,5 +23,69 @@ namespace MicroServices.Web.Controllers
 
             return View(products);
         }
+
+        public IActionResult ProductCreate()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ProductCreate(ProductModel productModel)
+        {
+            if (ModelState.IsValid)
+            {
+                ProductModel response = await _productService.CreateProduct(productModel);
+
+                if (response != null)
+                    return RedirectToAction(nameof(ProductIndex));
+            }
+
+            return View(productModel);
+        }
+
+        public async Task<IActionResult> ProductUpdate(long id)
+        {
+            ProductModel product = await _productService.FindProductById(id);
+
+            if (product != null)
+                return View(product);
+
+            return NotFound();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ProductUpdate(ProductModel productModel)
+        {
+            if (ModelState.IsValid)
+            {
+                ProductModel response = await _productService.UpdateProduct(productModel);
+
+                if (response != null)
+                    return RedirectToAction(nameof(ProductIndex));
+            }
+
+            return View(productModel);
+        }
+
+        public async Task<IActionResult> ProductDelete(long id)
+        {
+            ProductModel model = await _productService.FindProductById(id);
+
+            if (model != null)
+                return View(model);
+
+            return NotFound();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ProductDelete(ProductModel productModel)
+        {
+            bool response = await _productService.DeleteProductById(productModel.Id);
+
+            if (response)
+                return RedirectToAction(nameof(ProductIndex));
+
+            return View(productModel);
+        }
     }
 }
