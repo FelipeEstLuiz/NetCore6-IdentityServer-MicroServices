@@ -1,4 +1,5 @@
-﻿using Duende.IdentityServer.Models;
+﻿using Duende.IdentityServer;
+using Duende.IdentityServer.Models;
 using System.Collections.Generic;
 
 namespace MicroServices.IdentityServer.Configuration
@@ -31,6 +32,21 @@ namespace MicroServices.IdentityServer.Configuration
                 ClientSecrets = { new Secret("microservices_felipe_estevam".Sha256()) },
                 AllowedGrantTypes = GrantTypes.ClientCredentials,
                 AllowedScopes = { "read", "write", "profile" }
+            },
+            new Client()
+            {
+                ClientId = "microservice_shopping",
+                ClientSecrets = { new Secret("microservices_felipe_estevam".Sha256()) },
+                AllowedGrantTypes = GrantTypes.ClientCredentials,
+                RedirectUris = { "http://localhost:34499/signin-oidc" },
+                PostLogoutRedirectUris = { "http://localhost:34499/signout-callback-oidc" },
+                AllowedScopes = new List<string>()
+                {
+                    IdentityServerConstants.StandardScopes.OpenId,
+                    IdentityServerConstants.StandardScopes.Profile,
+                    IdentityServerConstants.StandardScopes.Email,
+                    "microservice_shopping"
+                }
             }
         };
     }
