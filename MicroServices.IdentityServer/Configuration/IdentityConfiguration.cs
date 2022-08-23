@@ -7,7 +7,7 @@ namespace MicroServices.IdentityServer.Configuration
     public static class IdentityConfiguration
     {
         public const string Admin = "Admin";
-        public const string Customer = "Customer";
+        public const string Client = "Client";
 
         public static IEnumerable<IdentityResource> IdentityResource => new List<IdentityResource>()
         {
@@ -38,8 +38,8 @@ namespace MicroServices.IdentityServer.Configuration
                 ClientId = "microservice_shopping",
                 ClientSecrets = { new Secret("microservices_felipe_estevam".Sha256()) },
                 AllowedGrantTypes = GrantTypes.ClientCredentials,
-                RedirectUris = { "http://localhost:34499/signin-oidc" },
-                PostLogoutRedirectUris = { "http://localhost:34499/signout-callback-oidc" },
+                RedirectUris = { "https://localhost:4430/signin-oidc" },
+                PostLogoutRedirectUris = { "https://localhost:4430/signout-callback-oidc" },
                 AllowedScopes = new List<string>()
                 {
                     IdentityServerConstants.StandardScopes.OpenId,

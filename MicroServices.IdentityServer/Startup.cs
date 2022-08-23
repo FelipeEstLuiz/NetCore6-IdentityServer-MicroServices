@@ -1,6 +1,9 @@
+using MicroServices.IdentityServer.Configuration;
+using MicroServices.IdentityServer.Model;
 using MicroServices.IdentityServer.Model.Context;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,6 +32,25 @@ namespace MicroServices.IdentityServer
                 )
             );
 
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<SqlServerContext>()
+                .AddDefaultTokenProviders();
+
+            IIdentityServerBuilder builder = services.AddIdentityServer(options =>
+            {
+                options.Events.RaiseErrorEvents = true;
+                options.Events.RaiseInformationEvents = true;
+                options.Events.RaiseFailureEvents = true;
+                options.Events.RaiseSuccessEvents = true;
+                options.EmitStaticAudienceClaim = true;
+            })
+            .AddInMemoryIdentityResources(IdentityConfiguration.IdentityResource)
+            .AddInMemoryApiScopes(IdentityConfiguration.ApiScopes)
+            .AddInMemoryClients(IdentityConfiguration.Clients)
+            .AddAspNetIdentity<ApplicationUser>();
+
+            builder.AddDeveloperSigningCredential();
+
             services.AddControllersWithViews();
         }
 
@@ -43,9 +65,12 @@ namespace MicroServices.IdentityServer
             {
                 app.UseExceptionHandler("/Home/Error");
             }
-            app.UseStaticFiles();
 
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
             app.UseRouting();
+
+            app.UseIdentityServer();
 
             app.UseAuthorization();
 
