@@ -2,7 +2,7 @@
 
 namespace MicroServices.ProductAPI.Migrations
 {
-    public partial class AddProductDataableOnDB : Migration
+    public partial class AddProductDataTableOnDb : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

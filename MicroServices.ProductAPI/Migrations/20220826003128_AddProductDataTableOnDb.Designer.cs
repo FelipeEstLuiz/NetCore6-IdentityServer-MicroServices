@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MicroServices.ProductAPI.Migrations
 {
     [DbContext(typeof(SqlServerContext))]
-    [Migration("20220816105133_AddProductDataableOnDB")]
-    partial class AddProductDataableOnDB
+    [Migration("20220826003128_AddProductDataTableOnDb")]
+    partial class AddProductDataTableOnDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
