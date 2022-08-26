@@ -1,4 +1,5 @@
 using MicroServices.IdentityServer.Configuration;
+using MicroServices.IdentityServer.Initializer;
 using MicroServices.IdentityServer.Model;
 using MicroServices.IdentityServer.Model.Context;
 using Microsoft.AspNetCore.Builder;
@@ -49,13 +50,15 @@ namespace MicroServices.IdentityServer
             .AddInMemoryClients(IdentityConfiguration.Clients)
             .AddAspNetIdentity<ApplicationUser>();
 
+            services.AddScoped<IDbInitializer, DbInitializer>();
+
             builder.AddDeveloperSigningCredential();
 
             services.AddControllersWithViews();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IDbInitializer initializer)
         {
             if (env.IsDevelopment())
             {
@@ -73,6 +76,8 @@ namespace MicroServices.IdentityServer
             app.UseIdentityServer();
 
             app.UseAuthorization();
+
+            initializer.Initialize();
 
             app.UseEndpoints(endpoints =>
             {
