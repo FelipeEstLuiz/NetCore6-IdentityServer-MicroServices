@@ -14,8 +14,8 @@ namespace MicroServices.IdentityServer.Initializer
         private readonly RoleManager<IdentityRole> _role;
 
         public DbInitializer(
-            SqlServerContext context, 
-            UserManager<ApplicationUser> user, 
+            SqlServerContext context,
+            UserManager<ApplicationUser> user,
             RoleManager<IdentityRole> role
         )
         {
@@ -31,7 +31,7 @@ namespace MicroServices.IdentityServer.Initializer
             _role.CreateAsync(new IdentityRole(IdentityConfiguration.Admin)).GetAwaiter().GetResult();
             _role.CreateAsync(new IdentityRole(IdentityConfiguration.Client)).GetAwaiter().GetResult();
 
-            ApplicationUser admin = new ApplicationUser()
+            ApplicationUser admin = new()
             {
                 UserName = "felipe-admin",
                 Email = "felipe-admin@felipe.com.br",
@@ -44,15 +44,15 @@ namespace MicroServices.IdentityServer.Initializer
             _user.CreateAsync(admin, "Felipe123$").GetAwaiter().GetResult();
             _user.AddToRoleAsync(admin, IdentityConfiguration.Admin).GetAwaiter().GetResult();
 
-            var adminClaims = _user.AddClaimsAsync(admin, new Claim[]
+            _user.AddClaimsAsync(admin, new Claim[]
             {
                 new Claim(JwtClaimTypes.Name, $"{admin.FirstName} {admin.LastName}"),
                 new Claim(JwtClaimTypes.GivenName, admin.FirstName),
                 new Claim(JwtClaimTypes.FamilyName, admin.LastName),
                 new Claim(JwtClaimTypes.Role, IdentityConfiguration.Admin)
-            }).Result;
+            }).GetAwaiter().GetResult();
 
-            ApplicationUser client = new ApplicationUser()
+            ApplicationUser client = new()
             {
                 UserName = "felipe-client",
                 Email = "felipe-client@felipe.com.br",
@@ -65,13 +65,13 @@ namespace MicroServices.IdentityServer.Initializer
             _user.CreateAsync(client, "Felipe123$").GetAwaiter().GetResult();
             _user.AddToRoleAsync(client, IdentityConfiguration.Client).GetAwaiter().GetResult();
 
-            var clientClaims = _user.AddClaimsAsync(client, new Claim[]
+            _user.AddClaimsAsync(client, new Claim[]
             {
                 new Claim(JwtClaimTypes.Name, $"{client.FirstName} {client.LastName}"),
                 new Claim(JwtClaimTypes.GivenName, client.FirstName),
                 new Claim(JwtClaimTypes.FamilyName, client.LastName),
                 new Claim(JwtClaimTypes.Role, IdentityConfiguration.Client)
-            }).Result;
+            }).GetAwaiter().GetResult();
         }
     }
 }

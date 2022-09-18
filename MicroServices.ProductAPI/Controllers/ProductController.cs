@@ -34,18 +34,18 @@ namespace MicroServices.ProductAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<ProductVO>> Create([FromBody] ProductVO vo)
+        public async Task<ActionResult<ProductVO>> Create([FromBody] ProductVO request)
         {
-            if (vo is null) return BadRequest();
-            ProductVO product = await _repository.Create(vo);
+            if (request is null) return BadRequest();
+            ProductVO product = await _repository.Create(request);
             return Ok(product);
         }
 
         [HttpPut]
-        public async Task<ActionResult<ProductVO>> Update([FromBody] ProductVO vo)
+        public async Task<ActionResult<ProductVO>> Update([FromBody] ProductVO request)
         {
-            if (vo is null) return BadRequest();
-            ProductVO product = await _repository.Update(vo);
+            if (request is null) return BadRequest();
+            ProductVO product = await _repository.Update(request);
             return Ok(product);
         }
 
