@@ -1,5 +1,7 @@
 ﻿using MicroServices.ProductAPI.Data.ValueObjects;
 using MicroServices.ProductAPI.Repository;
+using MicroServices.ProductAPI.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -19,6 +21,7 @@ namespace MicroServices.ProductAPI.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<ProductVO>>> FindAll()
         {
             IEnumerable<ProductVO> products = await _repository.FindAll();
@@ -26,6 +29,7 @@ namespace MicroServices.ProductAPI.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<ProductVO>> FindById(long id)
         {
             ProductVO product = await _repository.FindById(id);
@@ -34,6 +38,7 @@ namespace MicroServices.ProductAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<ProductVO>> Create([FromBody] ProductVO request)
         {
             if (request is null) return BadRequest();
@@ -42,6 +47,7 @@ namespace MicroServices.ProductAPI.Controllers
         }
 
         [HttpPut]
+        [Authorize]
         public async Task<ActionResult<ProductVO>> Update([FromBody] ProductVO request)
         {
             if (request is null) return BadRequest();
@@ -50,6 +56,7 @@ namespace MicroServices.ProductAPI.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = Role.Admin)]
         public async Task<ActionResult> Delete(long id)
         {
             bool status = await _repository.Delete(id);

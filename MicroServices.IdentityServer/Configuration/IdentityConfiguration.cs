@@ -37,7 +37,7 @@ namespace MicroServices.IdentityServer.Configuration
             {
                 ClientId = "microservice_shopping",
                 ClientSecrets = { new Secret("microservices_felipe_estevam".Sha256()) },
-                AllowedGrantTypes = GrantTypes.ClientCredentials,
+                AllowedGrantTypes = GrantTypes.Code,
                 RedirectUris = { "https://localhost:4430/signin-oidc" },
                 PostLogoutRedirectUris = { "https://localhost:4430/signout-callback-oidc" },
                 AllowedScopes = new List<string>()
