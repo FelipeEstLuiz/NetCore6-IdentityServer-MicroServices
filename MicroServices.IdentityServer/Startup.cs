@@ -1,7 +1,9 @@
+using Duende.IdentityServer.Services;
 using MicroServices.IdentityServer.Configuration;
 using MicroServices.IdentityServer.Initializer;
 using MicroServices.IdentityServer.Model;
 using MicroServices.IdentityServer.Model.Context;
+using MicroServices.IdentityServer.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -51,6 +53,7 @@ namespace MicroServices.IdentityServer
             .AddAspNetIdentity<ApplicationUser>();
 
             services.AddScoped<IDbInitializer, DbInitializer>();
+            services.AddScoped<IProfileService, ProfileService>();
 
             builder.AddDeveloperSigningCredential();
 

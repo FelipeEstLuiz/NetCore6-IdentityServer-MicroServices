@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
-namespace MicroServices.IdentityServer.ManiModule.Account
+namespace MicroServices.IdentityServer.MainModule.Account
 {
     public class RegisterViewModel
     {

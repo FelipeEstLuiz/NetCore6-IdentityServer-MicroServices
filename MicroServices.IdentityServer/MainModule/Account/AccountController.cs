@@ -9,7 +9,7 @@ using Duende.IdentityServer.Models;
 using Duende.IdentityServer.Services;
 using Duende.IdentityServer.Stores;
 using IdentityModel;
-using MicroServices.IdentityServer.ManiModule.Account;
+using MicroServices.IdentityServer.MainModule.Account;
 using MicroServices.IdentityServer.Model;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
