@@ -1,6 +1,7 @@
 ﻿using MicroServices.Web.Models;
 using MicroServices.Web.Services.IServices;
 using MicroServices.Web.Utils;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -21,7 +22,8 @@ public class ProductController : Controller
     [Authorize]
     public async Task<IActionResult> ProductIndex()
     {
-        IEnumerable<ProductModel> products = await _productService.FindAllProducts();
+        string token = await HttpContext.GetTokenAsync("access_token");
+        IEnumerable<ProductModel> products = await _productService.FindAllProducts(token);
 
         return View(products);
     }
@@ -37,7 +39,8 @@ public class ProductController : Controller
     {
         if (ModelState.IsValid)
         {
-            ProductModel response = await _productService.CreateProduct(productModel);
+            string token = await HttpContext.GetTokenAsync("access_token");
+            ProductModel response = await _productService.CreateProduct(productModel, token);
 
             if (response != null)
                 return RedirectToAction(nameof(ProductIndex));
@@ -48,7 +51,8 @@ public class ProductController : Controller
 
     public async Task<IActionResult> ProductUpdate(long id)
     {
-        ProductModel product = await _productService.FindProductById(id);
+        string token = await HttpContext.GetTokenAsync("access_token");
+        ProductModel product = await _productService.FindProductById(id, token);
 
         if (product != null)
             return View(product);
@@ -62,7 +66,8 @@ public class ProductController : Controller
     {
         if (ModelState.IsValid)
         {
-            ProductModel response = await _productService.UpdateProduct(productModel);
+            string token = await HttpContext.GetTokenAsync("access_token");
+            ProductModel response = await _productService.UpdateProduct(productModel, token);
 
             if (response != null)
                 return RedirectToAction(nameof(ProductIndex));
@@ -74,7 +79,8 @@ public class ProductController : Controller
 
     public async Task<IActionResult> ProductDelete(long id)
     {
-        ProductModel model = await _productService.FindProductById(id);
+        string token = await HttpContext.GetTokenAsync("access_token");
+        ProductModel model = await _productService.FindProductById(id, token);
 
         if (model != null)
             return View(model);
@@ -86,7 +92,8 @@ public class ProductController : Controller
     [Authorize(Roles = Role.Admin)]
     public async Task<IActionResult> ProductDelete(ProductModel productModel)
     {
-        bool response = await _productService.DeleteProductById(productModel.Id);
+        string token = await HttpContext.GetTokenAsync("access_token");
+        bool response = await _productService.DeleteProductById(productModel.Id, token);
 
         if (response)
             return RedirectToAction(nameof(ProductIndex));

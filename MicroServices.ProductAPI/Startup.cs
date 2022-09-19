@@ -45,7 +45,7 @@ namespace MicroServices.ProductAPI
             services.AddAuthentication("Bearer")
                 .AddJwtBearer(options =>
                 {
-                    options.Authority = "https://localhost:7268/";
+                    options.Authority = "https://localhost:4435/";
                     options.TokenValidationParameters = new()
                     {
                         ValidateAudience = false
