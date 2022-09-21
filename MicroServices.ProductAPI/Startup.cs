@@ -43,14 +43,14 @@ namespace MicroServices.ProductAPI
             services.AddControllers();
 
             services.AddAuthentication("Bearer")
-                .AddJwtBearer(options =>
-                {
-                    options.Authority = "https://localhost:4435/";
-                    options.TokenValidationParameters = new()
-                    {
-                        ValidateAudience = false
-                    };
-                });
+                .AddJwtBearer("Bearer", options =>
+                 {
+                     options.Authority = "https://localhost:4435/";
+                     options.TokenValidationParameters = new()
+                     {
+                         ValidateAudience = false
+                     };
+                 });
 
             services.AddAuthorization(options =>
             {
