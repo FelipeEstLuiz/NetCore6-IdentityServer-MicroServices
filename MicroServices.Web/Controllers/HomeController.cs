@@ -1,8 +1,10 @@
 ﻿using MicroServices.Web.Models;
+using MicroServices.Web.Services.IServices;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
@@ -11,15 +13,28 @@ namespace MicroServices.Web.Controllers;
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
+    private readonly IProductService _productService;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(ILogger<HomeController> logger, IProductService productService)
     {
         _logger = logger;
+        _productService = productService;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        return View();
+        IEnumerable<ProductModel> products = await _productService.FindAllProducts(string.Empty);
+
+        return View(products);
+    }
+
+    [Authorize]
+    public async Task<IActionResult> Details(int id)
+    {
+        string token = await HttpContext.GetTokenAsync("access_token");
+        ProductModel product = await _productService.FindProductById(id, token);
+
+        return View(product);
     }
 
     public IActionResult Privacy()
