@@ -1,0 +1,75 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": ".NET Core Launch (IdentityServer)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/MicroServices.IdentityServer/bin/Debug/net6.0/MicroServices.IdentityServer.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/MicroServices.IdentityServer",
+            "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/Views"
+            }
+        },
+		{
+            "name": ".NET Core Launch (Api)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/MicroServices.ProductAPI/bin/Debug/net6.0/MicroServices.ProductAPI.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/MicroServices.ProductAPI",
+            "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/Views"
+            }
+        },
+        {
+            "name": ".NET Core Launch (web)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/MicroServices.Web/bin/Debug/net6.0/MicroServices.Web.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/MicroServices.Web",
+            "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/Views"
+            }
+        },
+    ],
+    "compounds": [
+        {
+            "name": "API, Web API e IdentityServer",
+            "configurations": [
+                ".NET Core Launch (Api)",
+                ".NET Core Launch (IdentityServer)",
+                ".NET Core Launch (web)"
+            ]
+        }
+    ]
+}
