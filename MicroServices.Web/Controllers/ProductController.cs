@@ -23,7 +23,7 @@ public class ProductController : Controller
     public async Task<IActionResult> ProductIndex()
     {
         string token = await HttpContext.GetTokenAsync("access_token");
-        IEnumerable<ProductModel> products = await _productService.FindAllProducts(token);
+        IEnumerable<ProductViewModel> products = await _productService.FindAllProducts(token);
 
         return View(products);
     }
@@ -35,12 +35,12 @@ public class ProductController : Controller
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> ProductCreate(ProductModel productModel)
+    public async Task<IActionResult> ProductCreate(ProductViewModel productModel)
     {
         if (ModelState.IsValid)
         {
             string token = await HttpContext.GetTokenAsync("access_token");
-            ProductModel response = await _productService.CreateProduct(productModel, token);
+            ProductViewModel response = await _productService.CreateProduct(productModel, token);
 
             if (response != null)
                 return RedirectToAction(nameof(ProductIndex));
@@ -52,7 +52,7 @@ public class ProductController : Controller
     public async Task<IActionResult> ProductUpdate(long id)
     {
         string token = await HttpContext.GetTokenAsync("access_token");
-        ProductModel product = await _productService.FindProductById(id, token);
+        ProductViewModel product = await _productService.FindProductById(id, token);
 
         if (product != null)
             return View(product);
@@ -62,12 +62,12 @@ public class ProductController : Controller
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> ProductUpdate(ProductModel productModel)
+    public async Task<IActionResult> ProductUpdate(ProductViewModel productModel)
     {
         if (ModelState.IsValid)
         {
             string token = await HttpContext.GetTokenAsync("access_token");
-            ProductModel response = await _productService.UpdateProduct(productModel, token);
+            ProductViewModel response = await _productService.UpdateProduct(productModel, token);
 
             if (response != null)
                 return RedirectToAction(nameof(ProductIndex));
@@ -80,7 +80,7 @@ public class ProductController : Controller
     public async Task<IActionResult> ProductDelete(long id)
     {
         string token = await HttpContext.GetTokenAsync("access_token");
-        ProductModel model = await _productService.FindProductById(id, token);
+        ProductViewModel model = await _productService.FindProductById(id, token);
 
         if (model != null)
             return View(model);
@@ -90,7 +90,7 @@ public class ProductController : Controller
 
     [HttpPost]
     [Authorize(Roles = Role.Admin)]
-    public async Task<IActionResult> ProductDelete(ProductModel productModel)
+    public async Task<IActionResult> ProductDelete(ProductViewModel productModel)
     {
         string token = await HttpContext.GetTokenAsync("access_token");
         bool response = await _productService.DeleteProductById(productModel.Id, token);

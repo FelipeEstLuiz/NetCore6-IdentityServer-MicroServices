@@ -23,7 +23,7 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Index()
     {
-        IEnumerable<ProductModel> products = await _productService.FindAllProducts(string.Empty);
+        IEnumerable<ProductViewModel> products = await _productService.FindAllProducts(string.Empty);
 
         return View(products);
     }
@@ -32,7 +32,7 @@ public class HomeController : Controller
     public async Task<IActionResult> Details(int id)
     {
         string token = await HttpContext.GetTokenAsync("access_token");
-        ProductModel product = await _productService.FindProductById(id, token);
+        ProductViewModel product = await _productService.FindProductById(id, token);
 
         return View(product);
     }
