@@ -1,13 +1,10 @@
 using AutoMapper;
-using MicroServices.CartAPI.Config;
-using MicroServices.CartAPI.Model.Context;
-using MicroServices.CartAPI.Repository;
+using MicroServices.CouponAPI.Model.Context;
+using MicroServices.CouponAPI.Config;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
 
 string connectionString = builder.Configuration["ConnectionStrings:DefaultConnection"];
 
@@ -21,8 +18,6 @@ builder.Services.AddDbContext<SqlServerContext>(
 IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
 builder.Services.AddSingleton(mapper);
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
-builder.Services.AddScoped<ICartRepository, CartRepository>();
 
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer(options =>
@@ -45,7 +40,7 @@ builder.Services.AddAuthorization(options =>
 
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "MicroServices.CartAPI", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "MicroServices.CouponAPI", Version = "v1" });
     c.EnableAnnotations();
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
     {
