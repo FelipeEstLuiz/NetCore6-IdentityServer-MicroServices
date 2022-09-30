@@ -11,4 +11,6 @@ public class SqlServerContext : DbContext
         base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(SqlServerContext).Assembly);
     }
+
+    public DbSet<Coupon> Coupons { get; set; }
 }

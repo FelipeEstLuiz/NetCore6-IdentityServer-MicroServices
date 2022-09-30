@@ -3,6 +3,7 @@ using MicroServices.CouponAPI.Model.Context;
 using MicroServices.CouponAPI.Config;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using MicroServices.CouponAPI.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,8 @@ builder.Services.AddDbContext<SqlServerContext>(
 IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
 builder.Services.AddSingleton(mapper);
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+builder.Services.AddScoped<ICouponRepository, CouponRepository>();
 
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer(options =>
