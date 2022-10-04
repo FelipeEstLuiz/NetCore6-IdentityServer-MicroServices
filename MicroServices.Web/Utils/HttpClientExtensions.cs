@@ -8,7 +8,7 @@ namespace MicroServices.Web.Utils;
 
 public static class HttpClientExtensions
 {
-    private static readonly MediaTypeHeaderValue contentType = new("application/json");
+    private static MediaTypeHeaderValue contentType = new MediaTypeHeaderValue("application/json");
 
     public static async Task<T> ReadContentAs<T>(this HttpResponseMessage response)
     {
@@ -16,25 +16,30 @@ public static class HttpClientExtensions
             throw new ApplicationException($"Something went wrong calling the API: {response.ReasonPhrase}");
 
         string dataAsString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-
         return JsonSerializer.Deserialize<T>(
             dataAsString,
             new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
         );
     }
 
-    public static Task<HttpResponseMessage> PostAsJson<T>(this HttpClient httpClient, string url, T data)
+    public static Task<HttpResponseMessage> PostAsJson<T>(
+        this HttpClient httpClient,
+        string url,
+        T data)
     {
         string dataAsString = JsonSerializer.Serialize(data);
-        StringContent content = new(dataAsString);
+        StringContent content = new StringContent(dataAsString);
         content.Headers.ContentType = contentType;
         return httpClient.PostAsync(url, content);
     }
 
-    public static Task<HttpResponseMessage> PutAsJson<T>(this HttpClient httpClient, string url, T data)
+    public static Task<HttpResponseMessage> PutAsJson<T>(
+        this HttpClient httpClient,
+        string url,
+        T data)
     {
         string dataAsString = JsonSerializer.Serialize(data);
-        StringContent content = new(dataAsString);
+        StringContent content = new StringContent(dataAsString);
         content.Headers.ContentType = contentType;
         return httpClient.PutAsync(url, content);
     }

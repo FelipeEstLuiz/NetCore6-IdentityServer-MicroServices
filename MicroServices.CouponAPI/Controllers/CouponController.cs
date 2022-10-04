@@ -20,8 +20,8 @@ public class CouponController : ControllerBase
     [Authorize]
     public async Task<ActionResult<CouponVO>> GetCouponByCouponCode(string couponCode)
     {
-        CouponVO? coupon = await _repository.GetCouponByCouponCodeAsync(couponCode);
-        if(coupon is null) return NotFound();
+        CouponVO coupon = await _repository.GetCouponByCouponCodeAsync(couponCode);
+        if (coupon == null) return NotFound();
         return Ok(coupon);
     }
 }

@@ -1,5 +1,6 @@
 using AutoMapper;
 using MicroServices.CouponAPI.Data.ValueObjects;
+using MicroServices.CouponAPI.Model;
 using MicroServices.CouponAPI.Model.Context;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,7 +19,7 @@ public class CouponRepository : ICouponRepository
 
     public async Task<CouponVO> GetCouponByCouponCodeAsync(string couponCode)
     {
-        var coupon = await _context.Coupons.FirstOrDefaultAsync(c => c.CouponCode == couponCode);
+        Coupon coupon = await _context.Coupons.FirstOrDefaultAsync(c => c.CouponCode == couponCode);
         return _mapper.Map<CouponVO>(coupon);
     }
 }

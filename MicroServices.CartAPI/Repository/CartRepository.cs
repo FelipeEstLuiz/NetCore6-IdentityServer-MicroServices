@@ -19,49 +19,43 @@ public class CartRepository : ICartRepository
 
     public async Task<bool> ApplyCouponAsync(string userId, string couponCode)
     {
-        CartHeader? header = await _context.CartHeaders.FirstOrDefaultAsync(c => c.UserId == userId);
+        CartHeader header = await _context.CartHeaders.FirstOrDefaultAsync(c => c.UserId == userId);
 
-        if (header is not null)
+        if (header != null)
         {
             header.CouponCode = couponCode;
             _context.CartHeaders.Update(header);
             await _context.SaveChangesAsync();
-
             return true;
         }
-
         return false;
     }
 
     public async Task<bool> RemoveCouponAsync(string userId)
     {
-        CartHeader? header = await _context.CartHeaders.FirstOrDefaultAsync(c => c.UserId == userId);
+        CartHeader header = await _context.CartHeaders.FirstOrDefaultAsync(c => c.UserId == userId);
 
-        if (header is not null)
+        if (header != null)
         {
-            header.CouponCode = null;
+            header.CouponCode = "";
             _context.CartHeaders.Update(header);
             await _context.SaveChangesAsync();
-
             return true;
         }
-
         return false;
     }
 
     public async Task<bool> ClearCartAsync(string userId)
     {
-        CartHeader? header = await _context.CartHeaders.FirstOrDefaultAsync(c => c.UserId == userId);
+        CartHeader cartHeader = await _context.CartHeaders.FirstOrDefaultAsync(c => c.UserId == userId);
 
-        if (header is not null)
+        if (cartHeader != null)
         {
-            _context.CartDetails.RemoveRange(_context.CartDetails.Where(c => c.CartHeaderId == header.Id));
-            _context.CartHeaders.Remove(header);
+            _context.CartDetails.RemoveRange(_context.CartDetails.Where(c => c.CartHeaderId == cartHeader.Id));
+            _context.CartHeaders.Remove(cartHeader);
             await _context.SaveChangesAsync();
-
             return true;
         }
-
         return false;
     }
 
@@ -69,8 +63,9 @@ public class CartRepository : ICartRepository
     {
         Cart cart = new()
         {
-            CartHeader = await _context.CartHeaders.FirstOrDefaultAsync(c => c.UserId == userId)
+            CartHeader = await _context.CartHeaders.FirstOrDefaultAsync(c => c.UserId == userId),
         };
+
         cart.CartDetails = _context.CartDetails
             .Where(c => c.CartHeaderId == cart.CartHeader.Id)
             .Include(c => c.Product);
@@ -81,9 +76,7 @@ public class CartRepository : ICartRepository
     {
         try
         {
-            CartDetail? cartDetail = await _context.CartDetails.FirstOrDefaultAsync(c => c.Id == cartDetailsId);
-
-            if (cartDetail is null) return true;
+            CartDetail cartDetail = await _context.CartDetails.FirstOrDefaultAsync(c => c.Id == cartDetailsId);
 
             int total = _context.CartDetails.Where(c => c.CartHeaderId == cartDetail.CartHeaderId).Count();
 
@@ -91,16 +84,12 @@ public class CartRepository : ICartRepository
 
             if (total == 1)
             {
-                CartHeader? cartHeaderToRemove = await _context
+                CartHeader cartHeaderToRemove = await _context
                     .CartHeaders
                     .FirstOrDefaultAsync(c => c.Id == cartDetail.CartHeaderId);
-
-                if (cartHeaderToRemove is not null)
-                    _context.CartHeaders.Remove(cartHeaderToRemove);
+                _context.CartHeaders.Remove(cartHeaderToRemove);
             }
-
             await _context.SaveChangesAsync();
-
             return true;
         }
         catch (Exception)
@@ -113,8 +102,9 @@ public class CartRepository : ICartRepository
     {
         Cart cart = _mapper.Map<Cart>(vo);
         //Checks if the product is already saved in the database if it does not exist then save
-        var product = await _context.Products.FirstOrDefaultAsync(
-            p => p.Id == vo.CartDetails.FirstOrDefault().ProductId);
+        Product product = await _context
+            .Products
+            .FirstOrDefaultAsync(p => p.Id == vo.CartDetails.FirstOrDefault().ProductId);
 
         if (product == null)
         {
@@ -123,9 +113,10 @@ public class CartRepository : ICartRepository
         }
 
         //Check if CartHeader is null
-
-        var cartHeader = await _context.CartHeaders.AsNoTracking().FirstOrDefaultAsync(
-            c => c.UserId == cart.CartHeader.UserId);
+        CartHeader cartHeader = await _context
+            .CartHeaders
+            .AsNoTracking()
+            .FirstOrDefaultAsync(c => c.UserId == cart.CartHeader.UserId);
 
         if (cartHeader == null)
         {
@@ -141,9 +132,11 @@ public class CartRepository : ICartRepository
         {
             //If CartHeader is not null
             //Check if CartDetails has same product
-            var cartDetail = await _context.CartDetails.AsNoTracking().FirstOrDefaultAsync(
-                p => p.ProductId == cart.CartDetails.FirstOrDefault().ProductId &&
-                p.CartHeaderId == cartHeader.Id);
+            CartDetail cartDetail = await _context
+                .CartDetails
+                .AsNoTracking()
+                .FirstOrDefaultAsync(p => p.ProductId == cart.CartDetails.FirstOrDefault().ProductId
+                    && p.CartHeaderId == cartHeader.Id);
 
             if (cartDetail == null)
             {

@@ -7,7 +7,7 @@ public class MappingConfig
 {
     public static MapperConfiguration RegisterMaps()
     {
-        MapperConfiguration mappingConfig = new MapperConfiguration(config =>
+        MapperConfiguration mappingConfig = new(config =>
         {
             config.CreateMap<CouponVO, Coupon>().ReverseMap();
         });

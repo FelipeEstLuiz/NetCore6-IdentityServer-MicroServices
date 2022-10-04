@@ -40,9 +40,8 @@ public class CartController : Controller
         bool response = await _cartService.ApplyCouponAsync(model, token);
 
         if (response)
-        {
             return RedirectToAction(nameof(CartIndex));
-        }
+
         return View();
     }
 
@@ -90,22 +89,18 @@ public class CartController : Controller
 
         if (response?.CartHeader != null)
         {
-            if(string.IsNullOrWhiteSpace(response.CartHeader.CouponCode))
+            if (!string.IsNullOrEmpty(response.CartHeader.CouponCode))
             {
                 CouponViewModel coupon = await _couponService.GetCouponAsync(response.CartHeader.CouponCode, token);
-                
-                if(coupon?.CouponCode != null)
-                {
-                    response.CartHeader.DiscountAmount = coupon.DiscountAmount;
-                }
-            }
 
+                if (coupon?.CouponCode != null)
+                    response.CartHeader.DiscountAmount = coupon.DiscountAmount;
+            }
             foreach (CartDetailViewModel detail in response.CartDetails)
-                response.CartHeader.PurchaseAmount += detail.Product.Price * detail.Count;
+                response.CartHeader.PurchaseAmount += (detail.Product.Price * detail.Count);
 
             response.CartHeader.PurchaseAmount -= response.CartHeader.DiscountAmount;
         }
-
         return response;
     }
 }
