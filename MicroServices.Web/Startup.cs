@@ -28,6 +28,9 @@ namespace MicroServices.Web
             services.AddHttpClient<ICartService, CartService>(
                 c => c.BaseAddress = new Uri(Configuration["ServiceUrls:CartAPI"])
             );
+            services.AddHttpClient<ICouponService, CouponService>(
+                c => c.BaseAddress = new Uri(Configuration["ServiceUrls:CouponAPI"])
+            );
 
             services.AddControllersWithViews();
             services.AddAuthentication(options =>

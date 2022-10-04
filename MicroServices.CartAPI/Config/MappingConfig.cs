@@ -8,7 +8,7 @@ public class MappingConfig
 {
     public static MapperConfiguration RegisterMaps()
     {
-        MapperConfiguration mappingConfig = new MapperConfiguration(config => {
+        MapperConfiguration mappingConfig = new(config => {
             config.CreateMap<ProductVO, Product>().ReverseMap();
             config.CreateMap<CartHeaderVO, CartHeader>().ReverseMap();
             config.CreateMap<CartDetailVO, CartDetail>().ReverseMap();

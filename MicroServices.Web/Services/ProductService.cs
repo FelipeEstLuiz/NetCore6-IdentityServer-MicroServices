@@ -51,8 +51,8 @@ public class ProductService : IProductService
 
         if (response.IsSuccessStatusCode)
             return await response.ReadContentAs<ProductViewModel>();
-        else
-            throw new Exception("Something went wrong when calling API");
+
+        throw new Exception("Something went wrong when calling API");
     }
 
     public async Task<bool> DeleteProductById(long id, string token)
@@ -62,7 +62,7 @@ public class ProductService : IProductService
 
         if (response.IsSuccessStatusCode)
             return await response.ReadContentAs<bool>();
-        else
-            throw new Exception("Something went wrong when calling API");
+
+        throw new Exception("Something went wrong when calling API");
     }
 }

@@ -13,9 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroServices.Web", "MicroS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroServices.IdentityServer", "MicroServices.IdentityServer\MicroServices.IdentityServer.csproj", "{B4EA902A-E177-4538-B8CF-EF552CC8405B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroServices.CartAPI", "MicroServices.CartAPI\MicroServices.CartAPI.csproj", "{6C7F05F9-2690-4CCF-A78A-D328F64B9D5D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroServices.CartAPI", "MicroServices.CartAPI\MicroServices.CartAPI.csproj", "{6C7F05F9-2690-4CCF-A78A-D328F64B9D5D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroServices.CouponAPI", "MicroServices.CouponAPI\MicroServices.CouponAPI.csproj", "{CC224D94-3B22-4674-942D-9E6948A85CD1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroServices.CouponAPI", "MicroServices.CouponAPI\MicroServices.CouponAPI.csproj", "{CC224D94-3B22-4674-942D-9E6948A85CD1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -52,6 +52,7 @@ Global
 		{E912D571-2C20-40EA-9032-A39A82018AAD} = {CA6BD664-32E1-42FB-9728-AC89250932A3}
 		{B4EA902A-E177-4538-B8CF-EF552CC8405B} = {B9CC9D48-85C4-44EE-8AA4-29D61F42B0DF}
 		{6C7F05F9-2690-4CCF-A78A-D328F64B9D5D} = {B9CC9D48-85C4-44EE-8AA4-29D61F42B0DF}
+		{CC224D94-3B22-4674-942D-9E6948A85CD1} = {B9CC9D48-85C4-44EE-8AA4-29D61F42B0DF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F3DB9857-4D88-4CC5-9165-411C68DAC2FB}

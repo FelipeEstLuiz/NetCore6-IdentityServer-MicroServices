@@ -4,7 +4,6 @@ using MicroServices.Web.Utils;
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Reflection;
 using System.Threading.Tasks;
 
 namespace MicroServices.Web.Services;
@@ -55,13 +54,19 @@ public class CartService : ICartService
 
         if (response.IsSuccessStatusCode)
             return await response.ReadContentAs<bool>();
-        else
-            throw new Exception("Something went wrong when calling API");
+
+        throw new Exception("Something went wrong when calling API");
     }
 
-    public async Task<bool> ApplyCouponAsync(string userId, string token)
+    public async Task<bool> ApplyCouponAsync(CartViewModel model, string token)
     {
-        throw new System.NotImplementedException();
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        HttpResponseMessage response = await _client.PostAsJson($"{BasePath}/apply-coupon", model);
+
+        if (response.IsSuccessStatusCode)
+            return await response.ReadContentAs<bool>();
+
+        throw new Exception("Something went wrong when calling API");
     }
 
     public async Task<CartViewModel> CheckoutAsync(CartHeaderViewModel cart, string token)
@@ -76,6 +81,12 @@ public class CartService : ICartService
 
     public async Task<bool> RemoveCouponAsync(string userId, string token)
     {
-        throw new System.NotImplementedException();
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        HttpResponseMessage response = await _client.DeleteAsync($"{BasePath}/remove-coupon/{userId}");
+
+        if (response.IsSuccessStatusCode)
+            return await response.ReadContentAs<bool>();
+
+        throw new Exception("Something went wrong when calling API");
     }
 }
