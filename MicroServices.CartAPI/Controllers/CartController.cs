@@ -18,7 +18,7 @@ public class CartController : ControllerBase
     [HttpGet("find-cart/{id}")]
     public async Task<ActionResult<CartVO>> FindById(string id)
     {
-        var cart = await _repository.FindCartByUserId(id);
+        CartVO cart = await _repository.FindCartByUserIdAsync(id);
         if (cart == null) return NotFound();
         return Ok(cart);
     }
@@ -26,7 +26,7 @@ public class CartController : ControllerBase
     [HttpPost("add-cart")]
     public async Task<ActionResult<CartVO>> AddCart(CartVO vo)
     {
-        var cart = await _repository.SaveOrUpdateCart(vo);
+        CartVO cart = await _repository.SaveOrUpdateCartAsync(vo);
         if (cart == null) return NotFound();
         return Ok(cart);
     }
@@ -34,7 +34,7 @@ public class CartController : ControllerBase
     [HttpPut("update-cart")]
     public async Task<ActionResult<CartVO>> UpdateCart(CartVO vo)
     {
-        var cart = await _repository.SaveOrUpdateCart(vo);
+        CartVO cart = await _repository.SaveOrUpdateCartAsync(vo);
         if (cart == null) return NotFound();
         return Ok(cart);
     }
@@ -42,7 +42,7 @@ public class CartController : ControllerBase
     [HttpDelete("remove-cart/{id}")]
     public async Task<ActionResult<CartVO>> RemoveCart(int id)
     {
-        var status = await _repository.RemoveFromCart(id);
+        bool status = await _repository.RemoveFromCartAsync(id);
         if (!status) return BadRequest();
         return Ok(status);
     }
@@ -50,7 +50,7 @@ public class CartController : ControllerBase
     [HttpPost("apply-coupon")]
     public async Task<ActionResult<CartVO>> ApplyCoupon(CartVO vo)
     {
-        var status = await _repository.ApplyCoupon(vo.CartHeader.UserId, vo.CartHeader.CouponCode);
+        bool status = await _repository.ApplyCouponAsync(vo.CartHeader.UserId, vo.CartHeader.CouponCode);
         if (!status) return NotFound();
         return Ok(status);
     }
@@ -58,7 +58,7 @@ public class CartController : ControllerBase
     [HttpDelete("remove-coupon/{userId}")]
     public async Task<ActionResult<CartVO>> ApplyCoupon(string userId)
     {
-        var status = await _repository.RemoveCoupon(userId);
+        bool status = await _repository.RemoveCouponAsync(userId);
         if (!status) return NotFound();
         return Ok(status);
     }

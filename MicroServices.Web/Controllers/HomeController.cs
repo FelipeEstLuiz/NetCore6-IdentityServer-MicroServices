@@ -25,7 +25,7 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Index()
     {
-        var products = await _productService.FindAllProducts("");
+        var products = await _productService.FindAllProductsAsync("");
         return View(products);
     }
 
@@ -33,7 +33,7 @@ public class HomeController : Controller
     public async Task<IActionResult> Details(int id)
     {
         var token = await HttpContext.GetTokenAsync("access_token");
-        var model = await _productService.FindProductById(id, token);
+        var model = await _productService.FindProductByIdAsync(id, token);
         return View(model);
     }
 
@@ -56,14 +56,14 @@ public class HomeController : Controller
         {
             Count = model.Count,
             ProductId = model.Id,
-            Product = await _productService.FindProductById(model.Id, token)
+            Product = await _productService.FindProductByIdAsync(model.Id, token)
         };
 
         List<CartDetailViewModel> cartDetails = new List<CartDetailViewModel>();
         cartDetails.Add(cartDetail);
         cart.CartDetails = cartDetails;
 
-        var response = await _cartService.AddItemToCart(cart, token);
+        var response = await _cartService.AddItemToCartAsync(cart, token);
         if (response != null)
         {
             return RedirectToAction(nameof(Index));

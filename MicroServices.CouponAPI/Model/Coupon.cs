@@ -10,7 +10,7 @@ public class Coupon : BaseEntity
     [Column("coupon_code")]
     [Required]
     [StringLength(30)]
-    public string CouponCode { get; set; }
+    public string CouponCode { get; set; } = string.Empty;
 
     [Column("discount_amount")]
     [Required]

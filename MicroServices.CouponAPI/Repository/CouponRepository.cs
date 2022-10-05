@@ -19,7 +19,7 @@ public class CouponRepository : ICouponRepository
 
     public async Task<CouponVO> GetCouponByCouponCodeAsync(string couponCode)
     {
-        Coupon coupon = await _context.Coupons.FirstOrDefaultAsync(c => c.CouponCode == couponCode);
+        Coupon? coupon = await _context.Coupons.FirstOrDefaultAsync(c => c.CouponCode == couponCode);
         return _mapper.Map<CouponVO>(coupon);
     }
 }

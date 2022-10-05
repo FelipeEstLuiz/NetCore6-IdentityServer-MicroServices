@@ -36,7 +36,7 @@ public class CartController : Controller
         var token = await HttpContext.GetTokenAsync("access_token");
         var userId = User.Claims.Where(u => u.Type == "sub")?.FirstOrDefault()?.Value;
 
-        var response = await _cartService.ApplyCoupon(model, token);
+        var response = await _cartService.ApplyCouponAsync(model, token);
 
         if (response)
         {
@@ -52,7 +52,7 @@ public class CartController : Controller
         var token = await HttpContext.GetTokenAsync("access_token");
         var userId = User.Claims.Where(u => u.Type == "sub")?.FirstOrDefault()?.Value;
 
-        var response = await _cartService.RemoveCoupon(userId, token);
+        var response = await _cartService.RemoveCouponAsync(userId, token);
 
         if (response)
         {
@@ -66,7 +66,7 @@ public class CartController : Controller
         var token = await HttpContext.GetTokenAsync("access_token");
         var userId = User.Claims.Where(u => u.Type == "sub")?.FirstOrDefault()?.Value;
 
-        var response = await _cartService.RemoveFromCart(id, token);
+        var response = await _cartService.RemoveFromCartAsync(id, token);
 
         if (response)
         {
@@ -86,14 +86,14 @@ public class CartController : Controller
         var token = await HttpContext.GetTokenAsync("access_token");
         var userId = User.Claims.Where(u => u.Type == "sub")?.FirstOrDefault()?.Value;
 
-        var response = await _cartService.FindCartByUserId(userId, token);
+        var response = await _cartService.FindCartByUserIdAsync(userId, token);
 
         if (response?.CartHeader != null)
         {
             if (!string.IsNullOrEmpty(response.CartHeader.CouponCode))
             {
                 var coupon = await _couponService.
-                    GetCoupon(response.CartHeader.CouponCode, token);
+                    GetCouponAsync(response.CartHeader.CouponCode, token);
                 if (coupon?.CouponCode != null)
                 {
                     response.CartHeader.DiscountAmount = coupon.DiscountAmount;

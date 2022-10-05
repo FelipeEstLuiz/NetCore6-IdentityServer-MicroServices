@@ -19,7 +19,7 @@ public class CouponService : ICouponService
         _client = client ?? throw new ArgumentNullException(nameof(client));
     }
 
-    public async Task<CouponViewModel> GetCoupon(string code, string token)
+    public async Task<CouponViewModel> GetCouponAsync(string code, string token)
     {
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         var response = await _client.GetAsync($"{BasePath}/{code}");

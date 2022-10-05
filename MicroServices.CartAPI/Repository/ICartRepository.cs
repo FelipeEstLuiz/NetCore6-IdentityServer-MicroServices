@@ -4,10 +4,10 @@ namespace MicroServices.CartAPI.Repository;
 
 public interface ICartRepository
 {
-    Task<CartVO> FindCartByUserId(string userId);
-    Task<CartVO> SaveOrUpdateCart(CartVO cart);
-    Task<bool> RemoveFromCart(long cartDetailsId);
-    Task<bool> ApplyCoupon(string userId, string couponCode);
-    Task<bool> RemoveCoupon(string userId);
-    Task<bool> ClearCart(string userId);
+    Task<CartVO> FindCartByUserIdAsync(string userId);
+    Task<CartVO> SaveOrUpdateCartAsync(CartVO cart);
+    Task<bool> RemoveFromCartAsync(long cartDetailsId);
+    Task<bool> ApplyCouponAsync(string userId, string couponCode);
+    Task<bool> RemoveCouponAsync(string userId);
+    Task<bool> ClearCartAsync(string userId);
 }
