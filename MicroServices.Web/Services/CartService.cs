@@ -16,77 +16,67 @@ public class CartService : ICartService
     public CartService(HttpClient client)
     {
         _client = client ?? throw new ArgumentNullException(nameof(client));
-
     }
-    public async Task<CartViewModel> FindCartByUserIdAsync(string userId, string token)
+
+    public async Task<CartViewModel> FindCartByUserId(string userId, string token)
     {
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-        HttpResponseMessage response = await _client.GetAsync($"{BasePath}/find-cart/{userId}");
+        var response = await _client.GetAsync($"{BasePath}/find-cart/{userId}");
         return await response.ReadContentAs<CartViewModel>();
     }
 
-    public async Task<CartViewModel> AddItemToCartAsync(CartViewModel model, string token)
+    public async Task<CartViewModel> AddItemToCart(CartViewModel model, string token)
     {
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-        HttpResponseMessage response = await _client.PostAsJson($"{BasePath}/add-cart", model);
-
+        var response = await _client.PostAsJson($"{BasePath}/add-cart", model);
         if (response.IsSuccessStatusCode)
             return await response.ReadContentAs<CartViewModel>();
-
-        throw new Exception("Something went wrong when calling API");
+        else throw new Exception("Something went wrong when calling API");
     }
 
-    public async Task<CartViewModel> UpdateCartAsync(CartViewModel model, string token)
+    public async Task<CartViewModel> UpdateCart(CartViewModel model, string token)
     {
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-        HttpResponseMessage response = await _client.PutAsJson($"{BasePath}/update-cart", model);
-
+        var response = await _client.PutAsJson($"{BasePath}/update-cart", model);
         if (response.IsSuccessStatusCode)
             return await response.ReadContentAs<CartViewModel>();
-
-        throw new Exception("Something went wrong when calling API");
+        else throw new Exception("Something went wrong when calling API");
     }
 
-    public async Task<bool> RemoveFormCartAsync(long cartId, string token)
+    public async Task<bool> RemoveFromCart(long cartId, string token)
     {
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-        HttpResponseMessage response = await _client.DeleteAsync($"{BasePath}/remove-cart/{cartId}");
-
+        var response = await _client.DeleteAsync($"{BasePath}/remove-cart/{cartId}");
         if (response.IsSuccessStatusCode)
             return await response.ReadContentAs<bool>();
-
-        throw new Exception("Something went wrong when calling API");
+        else throw new Exception("Something went wrong when calling API");
     }
 
-    public async Task<bool> ApplyCouponAsync(CartViewModel model, string token)
+    public async Task<bool> ApplyCoupon(CartViewModel model, string token)
     {
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-        HttpResponseMessage response = await _client.PostAsJson($"{BasePath}/apply-coupon", model);
-
+        var response = await _client.PostAsJson($"{BasePath}/apply-coupon", model);
         if (response.IsSuccessStatusCode)
             return await response.ReadContentAs<bool>();
-
-        throw new Exception("Something went wrong when calling API");
+        else throw new Exception("Something went wrong when calling API");
     }
 
-    public async Task<CartViewModel> CheckoutAsync(CartHeaderViewModel cart, string token)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public async Task<bool> ClearCartAsync(string userId, string token)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public async Task<bool> RemoveCouponAsync(string userId, string token)
+    public async Task<bool> RemoveCoupon(string userId, string token)
     {
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-        HttpResponseMessage response = await _client.DeleteAsync($"{BasePath}/remove-coupon/{userId}");
-
+        var response = await _client.DeleteAsync($"{BasePath}/remove-coupon/{userId}");
         if (response.IsSuccessStatusCode)
             return await response.ReadContentAs<bool>();
+        else throw new Exception("Something went wrong when calling API");
+    }
 
-        throw new Exception("Something went wrong when calling API");
+    public async Task<CartViewModel> Checkout(CartHeaderViewModel cartHeader, string token)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<bool> ClearCart(string userId, string token)
+    {
+        throw new NotImplementedException();
     }
 }

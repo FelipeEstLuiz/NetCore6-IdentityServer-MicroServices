@@ -14,8 +14,7 @@ public class CartController : Controller
     private readonly ICartService _cartService;
     private readonly ICouponService _couponService;
 
-    public CartController(
-        IProductService productService,
+    public CartController(IProductService productService,
         ICartService cartService,
         ICouponService couponService)
     {
@@ -34,14 +33,15 @@ public class CartController : Controller
     [ActionName("ApplyCoupon")]
     public async Task<IActionResult> ApplyCoupon(CartViewModel model)
     {
-        string token = await HttpContext.GetTokenAsync("access_token");
-        string userId = User.Claims.Where(u => u.Type == "sub")?.FirstOrDefault()?.Value;
+        var token = await HttpContext.GetTokenAsync("access_token");
+        var userId = User.Claims.Where(u => u.Type == "sub")?.FirstOrDefault()?.Value;
 
-        bool response = await _cartService.ApplyCouponAsync(model, token);
+        var response = await _cartService.ApplyCoupon(model, token);
 
         if (response)
+        {
             return RedirectToAction(nameof(CartIndex));
-
+        }
         return View();
     }
 
@@ -49,10 +49,10 @@ public class CartController : Controller
     [ActionName("RemoveCoupon")]
     public async Task<IActionResult> RemoveCoupon()
     {
-        string token = await HttpContext.GetTokenAsync("access_token");
-        string userId = User.Claims.Where(u => u.Type == "sub")?.FirstOrDefault()?.Value;
+        var token = await HttpContext.GetTokenAsync("access_token");
+        var userId = User.Claims.Where(u => u.Type == "sub")?.FirstOrDefault()?.Value;
 
-        bool response = await _cartService.RemoveCouponAsync(userId, token);
+        var response = await _cartService.RemoveCoupon(userId, token);
 
         if (response)
         {
@@ -63,14 +63,15 @@ public class CartController : Controller
 
     public async Task<IActionResult> Remove(int id)
     {
-        string token = await HttpContext.GetTokenAsync("access_token");
-        string userId = User.Claims.Where(u => u.Type == "sub")?.FirstOrDefault()?.Value;
+        var token = await HttpContext.GetTokenAsync("access_token");
+        var userId = User.Claims.Where(u => u.Type == "sub")?.FirstOrDefault()?.Value;
 
-        bool response = await _cartService.RemoveFormCartAsync(id, token);
+        var response = await _cartService.RemoveFromCart(id, token);
 
         if (response)
+        {
             return RedirectToAction(nameof(CartIndex));
-
+        }
         return View();
     }
 
@@ -82,23 +83,26 @@ public class CartController : Controller
 
     private async Task<CartViewModel> FindUserCart()
     {
-        string token = await HttpContext.GetTokenAsync("access_token");
-        string userId = User.Claims.Where(u => u.Type == "sub")?.FirstOrDefault()?.Value;
+        var token = await HttpContext.GetTokenAsync("access_token");
+        var userId = User.Claims.Where(u => u.Type == "sub")?.FirstOrDefault()?.Value;
 
-        CartViewModel response = await _cartService.FindCartByUserIdAsync(userId, token);
+        var response = await _cartService.FindCartByUserId(userId, token);
 
         if (response?.CartHeader != null)
         {
             if (!string.IsNullOrEmpty(response.CartHeader.CouponCode))
             {
-                CouponViewModel coupon = await _couponService.GetCouponAsync(response.CartHeader.CouponCode, token);
-
+                var coupon = await _couponService.
+                    GetCoupon(response.CartHeader.CouponCode, token);
                 if (coupon?.CouponCode != null)
+                {
                     response.CartHeader.DiscountAmount = coupon.DiscountAmount;
+                }
             }
-            foreach (CartDetailViewModel detail in response.CartDetails)
+            foreach (var detail in response.CartDetails)
+            {
                 response.CartHeader.PurchaseAmount += (detail.Product.Price * detail.Count);
-
+            }
             response.CartHeader.PurchaseAmount -= response.CartHeader.DiscountAmount;
         }
         return response;

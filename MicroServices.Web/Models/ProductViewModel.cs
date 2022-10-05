@@ -17,14 +17,12 @@ public class ProductViewModel
     public string SubstringName()
     {
         if (Name.Length < 24) return Name;
-
-        return $"{Name[..21]} ...";
+        return $"{Name.Substring(0, 21)} ...";
     }
 
     public string SubstringDescription()
     {
         if (Description.Length < 355) return Description;
-
-        return $"{Description[..351]} ...";
+        return $"{Description.Substring(0, 352)} ...";
     }
 }

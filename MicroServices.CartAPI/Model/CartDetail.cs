@@ -10,9 +10,7 @@ public class CartDetail : BaseEntity
 
     [ForeignKey("CartHeaderId")]
     public virtual CartHeader CartHeader { get; set; }
-
     public long ProductId { get; set; }
-
     [ForeignKey("ProductId")]
     public virtual Product Product { get; set; }
 

@@ -14,11 +14,11 @@ public static class HttpClientExtensions
     {
         if (!response.IsSuccessStatusCode)
             throw new ApplicationException($"Something went wrong calling the API: {response.ReasonPhrase}");
-
-        string dataAsString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+        var dataAsString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
         return JsonSerializer.Deserialize<T>(
             dataAsString,
-            new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+            new JsonSerializerOptions
+            { PropertyNameCaseInsensitive = true }
         );
     }
 
@@ -27,8 +27,8 @@ public static class HttpClientExtensions
         string url,
         T data)
     {
-        string dataAsString = JsonSerializer.Serialize(data);
-        StringContent content = new StringContent(dataAsString);
+        var dataAsString = JsonSerializer.Serialize(data);
+        var content = new StringContent(dataAsString);
         content.Headers.ContentType = contentType;
         return httpClient.PostAsync(url, content);
     }
@@ -38,8 +38,8 @@ public static class HttpClientExtensions
         string url,
         T data)
     {
-        string dataAsString = JsonSerializer.Serialize(data);
-        StringContent content = new StringContent(dataAsString);
+        var dataAsString = JsonSerializer.Serialize(data);
+        var content = new StringContent(dataAsString);
         content.Headers.ContentType = contentType;
         return httpClient.PutAsync(url, content);
     }
