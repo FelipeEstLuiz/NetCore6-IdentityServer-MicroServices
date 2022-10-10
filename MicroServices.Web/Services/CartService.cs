@@ -25,19 +25,19 @@ public class CartService : ICartService
         return await response.ReadContentAs<CartViewModel>();
     }
 
-    public async Task<CartViewModel> AddItemToCartAsync(CartViewModel model, string token)
+    public async Task<CartViewModel> AddItemToCartAsync(CartViewModel cartViewModel, string token)
     {
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-        HttpResponseMessage response = await _client.PostAsJson($"{BasePath}/add-cart", model);
+        HttpResponseMessage response = await _client.PostAsJson($"{BasePath}/add-cart", cartViewModel);
         if (response.IsSuccessStatusCode)
             return await response.ReadContentAs<CartViewModel>();
         throw new Exception("Something went wrong when calling API");
     }
 
-    public async Task<CartViewModel> UpdateCartAsync(CartViewModel model, string token)
+    public async Task<CartViewModel> UpdateCartAsync(CartViewModel cartViewModel, string token)
     {
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-        HttpResponseMessage response = await _client.PutAsJson($"{BasePath}/update-cart", model);
+        HttpResponseMessage response = await _client.PutAsJson($"{BasePath}/update-cart", cartViewModel);
         if (response.IsSuccessStatusCode)
             return await response.ReadContentAs<CartViewModel>();
         throw new Exception("Something went wrong when calling API");
@@ -52,10 +52,10 @@ public class CartService : ICartService
         throw new Exception("Something went wrong when calling API");
     }
 
-    public async Task<bool> ApplyCouponAsync(CartViewModel model, string token)
+    public async Task<bool> ApplyCouponAsync(CartViewModel cartViewModel, string token)
     {
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-        HttpResponseMessage response = await _client.PostAsJson($"{BasePath}/apply-coupon", model);
+        HttpResponseMessage response = await _client.PostAsJson($"{BasePath}/apply-coupon", cartViewModel);
         if (response.IsSuccessStatusCode)
             return await response.ReadContentAs<bool>();
         throw new Exception("Something went wrong when calling API");
@@ -70,9 +70,13 @@ public class CartService : ICartService
         throw new Exception("Something went wrong when calling API");
     }
 
-    public async Task<CartViewModel> CheckoutAsync(CartHeaderViewModel cartHeader, string token)
+    public async Task<CartHeaderViewModel> CheckoutAsync(CartHeaderViewModel cartHeaderViewModel, string token)
     {
-        throw new NotImplementedException();
+         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        HttpResponseMessage response = await _client.PostAsJson($"{BasePath}/checkout", cartHeaderViewModel);
+        if (response.IsSuccessStatusCode)
+            return await response.ReadContentAs<CartHeaderViewModel>();
+        throw new Exception("Something went wrong when calling API");
     }
 
     public async Task<bool> ClearCartAsync(string userId, string token)

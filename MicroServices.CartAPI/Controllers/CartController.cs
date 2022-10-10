@@ -1,4 +1,5 @@
 ﻿using MicroServices.CartAPI.Data.ValueObjects;
+using MicroServices.CartAPI.Messages;
 using MicroServices.CartAPI.Repository;
 using Microsoft.AspNetCore.Mvc;
 
@@ -61,5 +62,16 @@ public class CartController : ControllerBase
         bool status = await _repository.RemoveCouponAsync(userId);
         if (!status) return NotFound();
         return Ok(status);
+    }
+
+    [HttpPost("checkout")]
+    public async Task<ActionResult<CheckoutHeaderVO>> Checkout(CheckoutHeaderVO vo)
+    {
+        CartVO cart = await _repository.FindCartByUserIdAsync(vo.UserId);
+        if (cart == null) return NotFound();
+        vo.CartDetails = cart.CartDetails;
+        vo.DateTime = DateTime.Now;
+
+        return Ok(vo);
     }
 }
