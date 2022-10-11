@@ -15,6 +15,9 @@ builder.Services.AddDbContext<SqlServerContext>(
     )
 );
 
+var contex = new DbContextOptionsBuilder<SqlServerContext>();
+contex.UseSqlServer(connectionString);
+
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer(options =>
     {
@@ -40,7 +43,7 @@ builder.Services.AddSwaggerGen(c =>
     c.EnableAnnotations();
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
     {
-        // definir configurações
+        // definir configuraï¿½ï¿½es
         Name = "Authorization",
         Type = SecuritySchemeType.ApiKey,
         Scheme = "Bearer",
@@ -50,7 +53,7 @@ builder.Services.AddSwaggerGen(c =>
 
     c.AddSecurityRequirement(new OpenApiSecurityRequirement()
     {
-        // definir as configurações
+        // definir as configuraï¿½ï¿½es
         {
             new OpenApiSecurityScheme()
             {
