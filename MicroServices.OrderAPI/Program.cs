@@ -1,8 +1,4 @@
-using AutoMapper;
-using MicroServices.CartAPI.Config;
-using MicroServices.CartAPI.Model.Context;
-using MicroServices.CartAPI.RabbitMQSender;
-using MicroServices.CartAPI.Repository;
+using MicroServices.OrderAPI.Model.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -18,13 +14,6 @@ builder.Services.AddDbContext<SqlServerContext>(
         b => b.MigrationsAssembly(typeof(SqlServerContext).Assembly.FullName)
     )
 );
-
-IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
-builder.Services.AddSingleton(mapper);
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
-builder.Services.AddScoped<ICartRepository, CartRepository>();
-builder.Services.AddSingleton<IRabbitMQMessageSender, RabbitMQMessageSender>();
 
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer(options =>
@@ -47,11 +36,11 @@ builder.Services.AddAuthorization(options =>
 
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "MicroServices.CartAPI", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "MicroServices.OrderAPI", Version = "v1" });
     c.EnableAnnotations();
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
     {
-        // definir configuraÃ§Ãµes
+        // definir configurações
         Name = "Authorization",
         Type = SecuritySchemeType.ApiKey,
         Scheme = "Bearer",
@@ -61,7 +50,7 @@ builder.Services.AddSwaggerGen(c =>
 
     c.AddSecurityRequirement(new OpenApiSecurityRequirement()
     {
-        // definir as configuraÃ§Ãµes
+        // definir as configurações
         {
             new OpenApiSecurityScheme()
             {

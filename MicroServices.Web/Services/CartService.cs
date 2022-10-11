@@ -31,7 +31,7 @@ public class CartService : ICartService
         HttpResponseMessage response = await _client.PostAsJson($"{BasePath}/add-cart", cartViewModel);
         if (response.IsSuccessStatusCode)
             return await response.ReadContentAs<CartViewModel>();
-        throw new Exception("Something went wrong when calling API");
+        throw new InvalidOperationException("Something went wrong when calling API");
     }
 
     public async Task<CartViewModel> UpdateCartAsync(CartViewModel cartViewModel, string token)
@@ -40,7 +40,7 @@ public class CartService : ICartService
         HttpResponseMessage response = await _client.PutAsJson($"{BasePath}/update-cart", cartViewModel);
         if (response.IsSuccessStatusCode)
             return await response.ReadContentAs<CartViewModel>();
-        throw new Exception("Something went wrong when calling API");
+        throw new InvalidOperationException("Something went wrong when calling API");
     }
 
     public async Task<bool> RemoveFromCartAsync(long cartId, string token)
@@ -49,7 +49,7 @@ public class CartService : ICartService
         HttpResponseMessage response = await _client.DeleteAsync($"{BasePath}/remove-cart/{cartId}");
         if (response.IsSuccessStatusCode)
             return await response.ReadContentAs<bool>();
-        throw new Exception("Something went wrong when calling API");
+        throw new InvalidOperationException("Something went wrong when calling API");
     }
 
     public async Task<bool> ApplyCouponAsync(CartViewModel cartViewModel, string token)
@@ -58,7 +58,7 @@ public class CartService : ICartService
         HttpResponseMessage response = await _client.PostAsJson($"{BasePath}/apply-coupon", cartViewModel);
         if (response.IsSuccessStatusCode)
             return await response.ReadContentAs<bool>();
-        throw new Exception("Something went wrong when calling API");
+        throw new InvalidOperationException("Something went wrong when calling API");
     }
 
     public async Task<bool> RemoveCouponAsync(string userId, string token)
@@ -67,7 +67,7 @@ public class CartService : ICartService
         HttpResponseMessage response = await _client.DeleteAsync($"{BasePath}/remove-coupon/{userId}");
         if (response.IsSuccessStatusCode)
             return await response.ReadContentAs<bool>();
-        throw new Exception("Something went wrong when calling API");
+        throw new InvalidOperationException("Something went wrong when calling API");
     }
 
     public async Task<CartHeaderViewModel> CheckoutAsync(CartHeaderViewModel cartHeaderViewModel, string token)
@@ -76,7 +76,7 @@ public class CartService : ICartService
         HttpResponseMessage response = await _client.PostAsJson($"{BasePath}/checkout", cartHeaderViewModel);
         if (response.IsSuccessStatusCode)
             return await response.ReadContentAs<CartHeaderViewModel>();
-        throw new Exception("Something went wrong when calling API");
+        throw new InvalidOperationException("Something went wrong when calling API");
     }
 
     public async Task<bool> ClearCartAsync(string userId, string token)

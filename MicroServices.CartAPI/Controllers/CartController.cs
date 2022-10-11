@@ -1,5 +1,6 @@
 ﻿using MicroServices.CartAPI.Data.ValueObjects;
 using MicroServices.CartAPI.Messages;
+using MicroServices.CartAPI.RabbitMQSender;
 using MicroServices.CartAPI.Repository;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,18 +10,24 @@ namespace MicroServices.CartAPI.Controllers;
 [Route("api/v1/[controller]")]
 public class CartController : ControllerBase
 {
-    private ICartRepository _repository;
+    private readonly ICartRepository _repository;
+    private readonly IRabbitMQMessageSender _rabbitMQMessageSender;
 
-    public CartController(ICartRepository repository)
+    public CartController(
+        ICartRepository repository,
+        IRabbitMQMessageSender rabbitMQMessageSender
+    )
     {
         _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+        _rabbitMQMessageSender = rabbitMQMessageSender
+            ?? throw new ArgumentNullException(nameof(rabbitMQMessageSender));
     }
 
     [HttpGet("find-cart/{id}")]
     public async Task<ActionResult<CartVO>> FindById(string id)
     {
         CartVO cart = await _repository.FindCartByUserIdAsync(id);
-        if (cart == null) return NotFound();
+        if (cart is null) return NotFound();
         return Ok(cart);
     }
 
@@ -36,7 +43,7 @@ public class CartController : ControllerBase
     public async Task<ActionResult<CartVO>> UpdateCart(CartVO vo)
     {
         CartVO cart = await _repository.SaveOrUpdateCartAsync(vo);
-        if (cart == null) return NotFound();
+        if (cart is null) return NotFound();
         return Ok(cart);
     }
 
@@ -67,10 +74,13 @@ public class CartController : ControllerBase
     [HttpPost("checkout")]
     public async Task<ActionResult<CheckoutHeaderVO>> Checkout(CheckoutHeaderVO vo)
     {
+        if (vo?.UserId is null) return BadRequest();
         CartVO cart = await _repository.FindCartByUserIdAsync(vo.UserId);
-        if (cart == null) return NotFound();
+        if (cart is null) return NotFound();
         vo.CartDetails = cart.CartDetails;
         vo.DateTime = DateTime.Now;
+
+        _rabbitMQMessageSender.SendMessage(vo, "checkoutqueue");
 
         return Ok(vo);
     }

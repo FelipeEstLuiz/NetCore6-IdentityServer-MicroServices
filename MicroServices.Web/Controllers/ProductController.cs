@@ -70,7 +70,7 @@ public class ProductController : Controller
     {
         var token = await HttpContext.GetTokenAsync("access_token");
         var model = await _productService.FindProductByIdAsync(id, token);
-        if (model != null) return View(model);
+        if (model is not null) return View(model);
         return NotFound();
     }
 
