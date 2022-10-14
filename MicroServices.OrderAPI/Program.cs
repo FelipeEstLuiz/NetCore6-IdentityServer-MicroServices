@@ -1,4 +1,6 @@
+using MicroServices.OrderAPI.MessageConsumer;
 using MicroServices.OrderAPI.Model.Context;
+using MicroServices.OrderAPI.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -17,6 +19,10 @@ builder.Services.AddDbContext<SqlServerContext>(
 
 var contex = new DbContextOptionsBuilder<SqlServerContext>();
 contex.UseSqlServer(connectionString);
+
+builder.Services.AddSingleton(new OrderRepository(contex.Options));
+
+builder.Services.AddHostedService<RabbitMQCheckoutConsumer>();
 
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer(options =>

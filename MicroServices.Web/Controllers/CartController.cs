@@ -64,7 +64,6 @@ public class CartController : Controller
     public async Task<IActionResult> Remove(int id)
     {
         string token = await HttpContext.GetTokenAsync("access_token");
-        string userId = User.Claims.Where(u => u.Type == "sub")?.FirstOrDefault()?.Value;
 
         bool response = await _cartService.RemoveFromCartAsync(id, token);
 
@@ -84,9 +83,14 @@ public class CartController : Controller
     public async Task<IActionResult> Checkout(CartViewModel model)
     {
         string token = await HttpContext.GetTokenAsync("access_token");
-        CartHeaderViewModel response = await _cartService.CheckoutAsync(model.CartHeader, token);
+        var response = await _cartService.CheckoutAsync(model.CartHeader, token);
 
-        if (response is not null)
+        if (response is string)
+        {
+            TempData["Error"] = response;
+            return RedirectToAction(nameof(Checkout));
+        }
+        else if (response is not null)
             return RedirectToAction(nameof(Confirmation));
 
         return View(model);

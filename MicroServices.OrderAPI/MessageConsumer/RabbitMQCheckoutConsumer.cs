@@ -8,13 +8,12 @@ using RabbitMQ.Client.Events;
 
 namespace MicroServices.OrderAPI.MessageConsumer;
 
-public class RabbitMQMessageConsumer : BackgroundService
+public class RabbitMQCheckoutConsumer : BackgroundService
 {
     private readonly OrderRepository _repository;
-    private IConnection _connection;
-    private IModel _channel;
+    private readonly IModel _channel;
 
-    public RabbitMQMessageConsumer(OrderRepository repository)
+    public RabbitMQCheckoutConsumer(OrderRepository repository)
     {
         _repository = repository;
 
@@ -25,9 +24,9 @@ public class RabbitMQMessageConsumer : BackgroundService
             Password = "guest"
         };
 
-        _connection = factory.CreateConnection();
+        IConnection connection = factory.CreateConnection();
 
-        _channel = _connection.CreateModel();
+        _channel = connection.CreateModel();
         _channel.QueueDeclare(queue: "checkoutqueue", false, false, false, arguments: null);
     }
 
