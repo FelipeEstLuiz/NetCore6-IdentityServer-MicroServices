@@ -1,10 +1,10 @@
-﻿using MicroServices.CartAPI.Messages;
-using MicroServices.MessageBus;
+﻿using MicroServices.MessageBus;
+using MicroServices.OrderAPI.Messages;
 using RabbitMQ.Client;
 using System.Text;
 using System.Text.Json;
 
-namespace MicroServices.CartAPI.RabbitMQSender;
+namespace MicroServices.OrderAPI.RabbitMQSender;
 
 public class RabbitMQMessageSender : IRabbitMQMessageSender
 {
@@ -37,7 +37,7 @@ public class RabbitMQMessageSender : IRabbitMQMessageSender
         {
             WriteIndented = true
         };
-        string json = JsonSerializer.Serialize((CheckoutHeaderVO)baseMessage, options: options);
+        string json = JsonSerializer.Serialize((PaymentVO)baseMessage, options: options);
         return Encoding.UTF8.GetBytes(json);
     }
 

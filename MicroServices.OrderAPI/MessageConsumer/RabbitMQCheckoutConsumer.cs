@@ -2,6 +2,7 @@ using System.Text;
 using System.Text.Json;
 using MicroServices.OrderAPI.Messages;
 using MicroServices.OrderAPI.Model;
+using MicroServices.OrderAPI.RabbitMQSender;
 using MicroServices.OrderAPI.Repository;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -12,8 +13,9 @@ public class RabbitMQCheckoutConsumer : BackgroundService
 {
     private readonly OrderRepository _repository;
     private readonly IModel _channel;
+    private IRabbitMQMessageSender _rabbitMQMessageSender;
 
-    public RabbitMQCheckoutConsumer(OrderRepository repository)
+    public RabbitMQCheckoutConsumer(OrderRepository repository, IRabbitMQMessageSender rabbitMQMessageSender)
     {
         _repository = repository;
 
@@ -28,6 +30,7 @@ public class RabbitMQCheckoutConsumer : BackgroundService
 
         _channel = connection.CreateModel();
         _channel.QueueDeclare(queue: "checkoutqueue", false, false, false, arguments: null);
+        _rabbitMQMessageSender = rabbitMQMessageSender;
     }
 
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
@@ -87,6 +90,26 @@ public class RabbitMQCheckoutConsumer : BackgroundService
             }
 
             await _repository.AddOrderAsync(order);
+
+            PaymentVO payment = new()
+            {
+                Name = vo.FirstName + " " + vo.LastName,
+                CardNumber = vo.CardNumber,
+                CVV = vo.CVV,
+                Email = vo.Email,
+                ExpiryMonthYear = vo.ExpiryMonthYear,
+                OrderId = vo.Id,
+                PurchaseAmount = vo.PurchaseAmount
+            };
+
+            try
+            {
+                _rabbitMQMessageSender.SendMessage(payment, "orderpaymentprocessqueue");
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }

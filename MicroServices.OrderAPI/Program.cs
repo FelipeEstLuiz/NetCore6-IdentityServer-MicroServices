@@ -1,5 +1,6 @@
 using MicroServices.OrderAPI.MessageConsumer;
 using MicroServices.OrderAPI.Model.Context;
+using MicroServices.OrderAPI.RabbitMQSender;
 using MicroServices.OrderAPI.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -23,6 +24,7 @@ contex.UseSqlServer(connectionString);
 builder.Services.AddSingleton(new OrderRepository(contex.Options));
 
 builder.Services.AddHostedService<RabbitMQCheckoutConsumer>();
+builder.Services.AddSingleton<IRabbitMQMessageSender, RabbitMQMessageSender>();
 
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer(options =>
