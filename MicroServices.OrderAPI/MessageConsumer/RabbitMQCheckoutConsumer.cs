@@ -13,7 +13,8 @@ public class RabbitMQCheckoutConsumer : BackgroundService
 {
     private readonly OrderRepository _repository;
     private readonly IModel _channel;
-    private IRabbitMQMessageSender _rabbitMQMessageSender;
+    private IConnection _connection;
+    private readonly IRabbitMQMessageSender _rabbitMQMessageSender;
 
     public RabbitMQCheckoutConsumer(OrderRepository repository, IRabbitMQMessageSender rabbitMQMessageSender)
     {
@@ -26,9 +27,8 @@ public class RabbitMQCheckoutConsumer : BackgroundService
             Password = "guest"
         };
 
-        IConnection connection = factory.CreateConnection();
-
-        _channel = connection.CreateModel();
+        _connection = factory.CreateConnection();
+        _channel = _connection.CreateModel();
         _channel.QueueDeclare(queue: "checkoutqueue", false, false, false, arguments: null);
         _rabbitMQMessageSender = rabbitMQMessageSender;
     }
