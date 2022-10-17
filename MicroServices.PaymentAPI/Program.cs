@@ -1,30 +1,13 @@
-using MicroServices.OrderAPI.MessageConsumer;
-using MicroServices.OrderAPI.Model.Context;
-using MicroServices.OrderAPI.RabbitMQSender;
-using MicroServices.OrderAPI.Repository;
-using Microsoft.EntityFrameworkCore;
+using MicroServices.PaymentAPI.MessageConsumer;
+using MicroServices.PaymentProcessor;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 string connectionString = builder.Configuration["ConnectionStrings:DefaultConnection"];
 
-builder.Services.AddDbContext<SqlServerContext>(
-    options => options.UseSqlServer(
-        connectionString,
-        b => b.MigrationsAssembly(typeof(SqlServerContext).Assembly.FullName)
-    )
-);
-
-var contex = new DbContextOptionsBuilder<SqlServerContext>();
-contex.UseSqlServer(connectionString);
-
-builder.Services.AddSingleton(new OrderRepository(contex.Options));
-
-builder.Services.AddHostedService<RabbitMQCheckoutConsumer>();
-builder.Services.AddSingleton<IRabbitMQMessageSender, RabbitMQMessageSender>();
+builder.Services.AddSingleton<IProcessPayment,ProcessPayment>();
+builder.Services.AddHostedService<RabbitMQPaymentConsumer>();
 
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer(options =>
@@ -47,7 +30,7 @@ builder.Services.AddAuthorization(options =>
 
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "MicroServices.OrderAPI", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "MicroServices.PaymentAPI", Version = "v1" });
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
     {
         // definir configurações
