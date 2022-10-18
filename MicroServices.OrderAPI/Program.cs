@@ -24,6 +24,7 @@ contex.UseSqlServer(connectionString);
 builder.Services.AddSingleton(new OrderRepository(contex.Options));
 
 builder.Services.AddHostedService<RabbitMQCheckoutConsumer>();
+builder.Services.AddHostedService<RabbitMQPaymentConsumer>();
 builder.Services.AddSingleton<IRabbitMQMessageSender, RabbitMQMessageSender>();
 
 builder.Services.AddAuthentication("Bearer")

@@ -1,4 +1,5 @@
 using MicroServices.PaymentAPI.MessageConsumer;
+using MicroServices.PaymentAPI.RabbitMQSender;
 using MicroServices.PaymentProcessor;
 using Microsoft.OpenApi.Models;
 
@@ -7,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 string connectionString = builder.Configuration["ConnectionStrings:DefaultConnection"];
 
 builder.Services.AddSingleton<IProcessPayment,ProcessPayment>();
+builder.Services.AddSingleton<IRabbitMQMessageSender,RabbitMQMessageSender>();
 builder.Services.AddHostedService<RabbitMQPaymentConsumer>();
 
 builder.Services.AddAuthentication("Bearer")

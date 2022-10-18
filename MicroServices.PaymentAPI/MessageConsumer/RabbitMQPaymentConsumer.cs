@@ -1,6 +1,7 @@
 using System.Text;
 using System.Text.Json;
 using MicroServices.PaymentAPI.Messages;
+using MicroServices.PaymentAPI.RabbitMQSender;
 using MicroServices.PaymentProcessor;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -12,9 +13,14 @@ public class RabbitMQPaymentConsumer : BackgroundService
     private readonly IModel _channel;
     private IConnection _connection;
     private readonly IProcessPayment _processPayment;
+    private IRabbitMQMessageSender _rabbitMQMessageSender;
 
-    public RabbitMQPaymentConsumer(IProcessPayment processPayment)
+    public RabbitMQPaymentConsumer(
+        IProcessPayment processPayment,
+        IRabbitMQMessageSender rabbitMQMessageSender
+    )
     {
+        _rabbitMQMessageSender = rabbitMQMessageSender;
         ConnectionFactory factory = new()
         {
             HostName = "localhost",
@@ -47,14 +53,18 @@ public class RabbitMQPaymentConsumer : BackgroundService
     {
         if (vo != null)
         {
-           
+            bool result = _processPayment.PaymentProcessor();
 
-           
-            
+            UpdatePaymentResultMessage paymentResult = new()
+            {
+                Status = result,
+                OrderId = vo.OrderId,
+                Email = vo.Email
+            };
 
             try
             {
-                //_rabbitMQMessageSender.SendMessage(payment, "orderpaymentprocessqueue");
+                _rabbitMQMessageSender.SendMessage(paymentResult, "orderpaymentresultqueue");
             }
             catch (Exception)
             {
