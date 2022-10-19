@@ -2,8 +2,8 @@
 
 public class ProcessPayment : IProcessPayment
 {
-    public bool PaymentProcessor()
+    public Task<bool> PaymentProcessor()
     {
-        return true;
+        return Task.FromResult(true);
     }
 }

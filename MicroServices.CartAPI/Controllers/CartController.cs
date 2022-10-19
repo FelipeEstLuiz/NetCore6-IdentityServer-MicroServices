@@ -16,8 +16,9 @@ public class CartController : ControllerBase
 
     public CartController(
         ICartRepository cartRepository,
-        IRabbitMQMessageSender rabbitMQMessageSender,
-        ICouponRepository couponRepository)
+        ICouponRepository couponRepository,
+        IRabbitMQMessageSender rabbitMQMessageSender
+    )
     {
         _cartRepository = cartRepository
             ?? throw new ArgumentNullException(nameof(cartRepository));
@@ -98,8 +99,18 @@ public class CartController : ControllerBase
 
         _rabbitMQMessageSender.SendMessage(vo, "checkoutqueue");
 
-        await _cartRepository.ClearCartAsync(vo.UserId);
+        await ClearCartUser(vo.UserId);
 
         return Ok(vo);
     }
+
+    [HttpDelete("clear-cart/{userId}")]
+    public async Task<ActionResult<bool>> ClearCart(string userId)
+    {
+        await ClearCartUser(userId);
+
+        return Ok(true);
+    }
+
+    private async Task ClearCartUser(string userId) => await _cartRepository.ClearCartAsync(userId);
 }

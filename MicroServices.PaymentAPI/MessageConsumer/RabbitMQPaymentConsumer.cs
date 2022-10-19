@@ -13,7 +13,7 @@ public class RabbitMQPaymentConsumer : BackgroundService
     private readonly IModel _channel;
     private IConnection _connection;
     private readonly IProcessPayment _processPayment;
-    private IRabbitMQMessageSender _rabbitMQMessageSender;
+    private readonly IRabbitMQMessageSender _rabbitMQMessageSender;
 
     public RabbitMQPaymentConsumer(
         IProcessPayment processPayment,
@@ -53,7 +53,7 @@ public class RabbitMQPaymentConsumer : BackgroundService
     {
         if (vo != null)
         {
-            bool result = _processPayment.PaymentProcessor();
+            bool result = await _processPayment.PaymentProcessor();
 
             UpdatePaymentResultMessage paymentResult = new()
             {
@@ -64,7 +64,7 @@ public class RabbitMQPaymentConsumer : BackgroundService
 
             try
             {
-                _rabbitMQMessageSender.SendMessage(paymentResult, "orderpaymentresultqueue");
+                _rabbitMQMessageSender.SendMessage(paymentResult);
             }
             catch (Exception)
             {

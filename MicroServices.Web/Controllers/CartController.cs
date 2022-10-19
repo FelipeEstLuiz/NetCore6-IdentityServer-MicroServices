@@ -1,26 +1,23 @@
-using System.Linq;
-using System.Threading.Tasks;
 using MicroServices.Web.Models;
 using MicroServices.Web.Services.IServices;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace MicroServices.Web.Controllers;
 
 public class CartController : Controller
 {
-    private readonly IProductService _productService;
     private readonly ICartService _cartService;
     private readonly ICouponService _couponService;
 
     public CartController(
-        IProductService productService,
         ICartService cartService,
         ICouponService couponService
     )
     {
-        _productService = productService;
         _cartService = cartService;
         _couponService = couponService;
     }
@@ -36,7 +33,6 @@ public class CartController : Controller
     public async Task<IActionResult> ApplyCoupon(CartViewModel model)
     {
         string token = await HttpContext.GetTokenAsync("access_token");
-        string userId = User.Claims.Where(u => u.Type == "sub")?.FirstOrDefault()?.Value;
 
         bool response = await _cartService.ApplyCouponAsync(model, token);
 

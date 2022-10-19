@@ -1,21 +1,21 @@
-using System.Text;
-using System.Text.Json;
-using MicroServices.OrderAPI.Messages;
-using MicroServices.OrderAPI.Repository;
+using MicroServices.Email.Messages;
+using MicroServices.Email.Repository;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using System.Text;
+using System.Text.Json;
 
-namespace MicroServices.OrderAPI.MessageConsumer;
+namespace MicroServices.Email.MessageConsumer;
 
 public class RabbitMQPaymentConsumer : BackgroundService
 {
-    private readonly OrderRepository _repository;
+    private readonly EmailRepository _repository;
     private readonly IModel _channel;
     private IConnection _connection;
     private const string ExchangeName = "FanoutPaymantUpdateExchange";
     string queueName = "";
 
-    public RabbitMQPaymentConsumer(OrderRepository repository)
+    public RabbitMQPaymentConsumer(EmailRepository repository)
     {
         _repository = repository;
 
@@ -41,20 +41,20 @@ public class RabbitMQPaymentConsumer : BackgroundService
         consumer.Received += (chanel, evt) =>
         {
             string content = Encoding.UTF8.GetString(evt.Body.ToArray());
-            UpdatePaymentResultVO? vo = JsonSerializer.Deserialize<UpdatePaymentResultVO>(content);
-            UpdatePaymentStatus(vo).GetAwaiter().GetResult();
+            UpdatePaymentResultMessage? message = JsonSerializer.Deserialize<UpdatePaymentResultMessage>(content);
+            ProcessLogs(message).GetAwaiter().GetResult();
             _channel.BasicAck(evt.DeliveryTag, false);
         };
         _channel.BasicConsume(queueName, false, consumer);
         return Task.CompletedTask;
     }
 
-    private async Task UpdatePaymentStatus(UpdatePaymentResultVO? vo)
+    private async Task ProcessLogs(UpdatePaymentResultMessage? message)
     {
         try
         {
-            if (vo is not null)
-                await _repository.UpdateOrderPaymentStatusAsync(vo.OrderId, vo.Status);
+            if (message is not null)
+                await _repository.LogEmailAsync(message);
         }
         catch (Exception)
         {

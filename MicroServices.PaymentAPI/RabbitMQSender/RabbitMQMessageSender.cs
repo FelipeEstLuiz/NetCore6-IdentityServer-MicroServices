@@ -11,7 +11,8 @@ public class RabbitMQMessageSender : IRabbitMQMessageSender
     private readonly string _hostName;
     private readonly string _password;
     private readonly string _userName;
-    private IConnection _connection;    
+    private IConnection _connection;
+    private const string ExchangeName = "FanoutPaymantUpdateExchange";
 
     public RabbitMQMessageSender()
     {
@@ -20,14 +21,17 @@ public class RabbitMQMessageSender : IRabbitMQMessageSender
         _userName = "guest";
     }
 
-    public void SendMessage(BaseMessage baseMessage, string queueName)
+    public void SendMessage(BaseMessage baseMessage)
     {
         if (ConnectionExists())
         {
             using IModel channel = _connection.CreateModel();
-            channel.QueueDeclare(queue: queueName, false, false, false, arguments: null);
+
+            channel.ExchangeDeclare(ExchangeName, ExchangeType.Fanout, durable: false);
+
             byte[] body = GetMessageAsByteArray(baseMessage);
-            channel.BasicPublish(exchange: "", routingKey: queueName, basicProperties: null, body: body);
+
+            channel.BasicPublish(exchange: ExchangeName, routingKey: "", basicProperties: null, body: body);
         }
     }
 

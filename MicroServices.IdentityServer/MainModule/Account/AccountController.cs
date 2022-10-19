@@ -150,7 +150,7 @@ namespace IdentityServerHost.Quickstart.UI
                             IsPersistent = true,
                             ExpiresUtc = DateTimeOffset.UtcNow.Add(AccountOptions.RememberMeLoginDuration)
                         };
-                    };
+                    }
 
                     // issue authentication cookie with subject ID and username
                     IdentityServerUser isuser = new(user.Id)
@@ -185,7 +185,7 @@ namespace IdentityServerHost.Quickstart.UI
                     else
                     {
                         // user might have clicked on a malicious link - should be logged
-                        throw new Exception("invalid return URL");
+                        throw new InvalidOperationException("invalid return URL");
                     }
                 }
 
@@ -212,7 +212,7 @@ namespace IdentityServerHost.Quickstart.UI
             // build a model so the logout page knows what to display
             LogoutViewModel vm = await BuildLogoutViewModelAsync(logoutId);
 
-            if (vm.ShowLogoutPrompt == false)
+            if (!vm.ShowLogoutPrompt)
             {
                 // if the request for logout was properly authenticated from IdentityServer, then
                 // we don't need to show the prompt and can just log the user out directly.
@@ -359,7 +359,7 @@ namespace IdentityServerHost.Quickstart.UI
                         else
                         {
                             // user might have clicked on a malicious link - should be logged
-                            throw new Exception("invalid return URL");
+                            throw new InvalidOperationException("invalid return URL");
                         }
                     }
 
